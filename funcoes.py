@@ -95,3 +95,58 @@ def pausa_mouse(pausado):
         pygame.mouse.set_visible(False)
         pygame.event.set_grab(True)
         pygame.mouse.get_rel()
+
+def desenhar_texto_opengl(texto_lista, fonte, largura_tela, altura_tela):
+    glDisable(GL_DEPTH_TEST)
+    glEnable(GL_BLEND)
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+    
+    sup = pygame.Surface((largura_tela, altura_tela), pygame.SRCALPHA)
+    y_inicial = (altura_tela // 2) - (len(texto_lista) * 20)
+
+    for i, linha in enumerate(texto_lista):
+        sombra = fonte.render(linha, True, (0, 0, 0))
+        # Texto Principal (Branco)
+        texto = fonte.render(linha, True, (255, 255, 255))
+        
+        # Calcula largura para centralizar
+        rect = texto.get_rect(center=(largura_tela // 2, y_inicial + (i * 50)))
+        
+        sup.blit(sombra, rect.move(2, 2)) # Sombra deslocada 2px
+        sup.blit(texto, rect)
+    
+    # 2. Converte para o formato que o OpenGL gosta
+    data = pygame.image.tostring(sup, "RGBA", True)
+    
+    # 3. Cria a textura
+    tex_id = glGenTextures(1)
+    glBindTexture(GL_TEXTURE_2D, tex_id)
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, largura_tela, altura_tela, 0, GL_RGBA, GL_UNSIGNED_BYTE, data)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+    
+    # 4. Desenha usando projeção ortogonal (para não distorcer)
+    glMatrixMode(GL_PROJECTION)
+    glPushMatrix() # Salva a projeção 3D
+    glLoadIdentity()
+    glOrtho(0, largura_tela, altura_tela, 0, -1, 1) # Projeção 2D
+    glMatrixMode(GL_MODELVIEW)
+    glPushMatrix()
+    glLoadIdentity()
+    
+    glEnable(GL_TEXTURE_2D)
+    glBegin(GL_QUADS)
+    glTexCoord2f(0, 1); glVertex2f(0, 0)
+    glTexCoord2f(1, 1); glVertex2f(largura_tela, 0)
+    glTexCoord2f(1, 0); glVertex2f(largura_tela, altura_tela)
+    glTexCoord2f(0, 0); glVertex2f(0, altura_tela)
+    glEnd()
+    glDisable(GL_TEXTURE_2D)
+    
+    # Restaura o estado anterior
+    glPopMatrix()
+    glMatrixMode(GL_PROJECTION)
+    glPopMatrix()
+    glMatrixMode(GL_MODELVIEW)
+    
+    glDeleteTextures(int(tex_id))
+    glEnable(GL_DEPTH_TEST)
