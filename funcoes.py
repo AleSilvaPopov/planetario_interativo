@@ -1,6 +1,18 @@
 import pygame
 import ctypes
 import constantes
+from OpenGL.GL import *
+from OpenGL.GLU import *
+
+def configurar_camera(largura_tela, altura_tela):
+    if altura_tela == 0:
+         altura_tela = 1
+    
+    gluPerspective(45.0, (largura_tela / altura_tela), 0.1, 100.0)
+    
+    glMatrixMode(GL_MODELVIEW)
+    glLoadIdentity()
+    glTranslatef(0.0, 0.0, -30.0)
 
 def tela_largura():
     return pygame.display.Info().current_w
@@ -21,12 +33,13 @@ def checar_fechamento(event, estado_rodando):
      
 def tamanho_tela_botao(event, tela_atual):
     if event.type == pygame.VIDEORESIZE:
-            return pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
+        flags_opengl = pygame.RESIZABLE | pygame.OPENGL | pygame.DOUBLEBUF
+        return pygame.display.set_mode((event.w, event.h), flags_opengl)
     return tela_atual
-        
 
 def tamanho_tela_f11(eh_tela_cheia, largura_janela, altura_janela):
+    flags_opengl = pygame.OPENGL | pygame.DOUBLEBUF
     if eh_tela_cheia:
-        return pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+        return pygame.display.set_mode((0,0), pygame.FULLSCREEN | flags_opengl)
     else:
-        return pygame.display.set_mode((largura_janela, altura_janela), pygame.RESIZABLE)
+        return pygame.display.set_mode((largura_janela, altura_janela), pygame.RESIZABLE | flags_opengl)
