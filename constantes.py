@@ -1,2 +1,3 @@
+
 #CORES
-COR_FUNDO = (30, 30, 40)
+COR_FUNDO = (0.0, 0.0, 0.0, 1.0)
