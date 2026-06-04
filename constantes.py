@@ -1,0 +1,2 @@
+#CORES
+COR_FUNDO = (30, 30, 40)
