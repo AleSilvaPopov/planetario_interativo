@@ -3,6 +3,7 @@ import ctypes
 import constantes
 from OpenGL.GL import *
 from OpenGL.GLU import *
+import random
 
 def configurar_camera(largura_tela, altura_tela):
     if altura_tela == 0:
@@ -10,7 +11,7 @@ def configurar_camera(largura_tela, altura_tela):
 
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    
+
     gluPerspective(45.0, (largura_tela / altura_tela), 0.1, 100.0)
     
     glMatrixMode(GL_MODELVIEW)
@@ -46,3 +47,13 @@ def tamanho_tela_f11(eh_tela_cheia, largura_janela, altura_janela):
         return pygame.display.set_mode((0,0), pygame.FULLSCREEN | flags_opengl)
     else:
         return pygame.display.set_mode((largura_janela, altura_janela), pygame.RESIZABLE | flags_opengl)
+
+def desenhar_estrelas(quantidade=100):
+    glBegin(GL_POINTS)
+    glColor3f(*constantes.COR_ESTRELAS)
+    for _ in range(quantidade):
+        x = random.uniform(-50, 50)
+        y = random.uniform(-50, 50)
+        z = random.uniform(-50, 50)
+        glVertex3f(x, y, z)
+    glEnd()

@@ -1,3 +1,4 @@
 
 #CORES
 COR_FUNDO = (0.0, 0.0, 0.0, 1.0)
+COR_ESTRELAS = (1.0, 1.0, 1.0)

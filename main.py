@@ -108,7 +108,8 @@ while rodando:
         sol.atualizar_fisica()
 
     sol.desenhar(quadric)
-
+    f.desenhar_estrelas()
+    
     pygame.display.flip()
     relogio.tick(60)
 
