@@ -7,6 +7,9 @@ from OpenGL.GLU import *
 def configurar_camera(largura_tela, altura_tela):
     if altura_tela == 0:
          altura_tela = 1
+
+    glMatrixMode(GL_PROJECTION)
+    glLoadIdentity()
     
     gluPerspective(45.0, (largura_tela / altura_tela), 0.1, 100.0)
     

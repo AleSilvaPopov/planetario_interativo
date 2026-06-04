@@ -2,6 +2,7 @@ import pygame
 import sys
 import constantes
 import funcoes as f
+import classes as c
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
@@ -25,6 +26,15 @@ glClearColor(0.0, 0.0, 0.1, 1.0)
 relogio = pygame.time.Clock()
 rodando = True
 
+quadric = gluNewQuadric()
+
+sol = c.CorpoCeleste(raio=3.0, distancia=0.0, velocidade=0.5, cor=(1.0, 1.0, 0.0))
+terra = c.CorpoCeleste(raio=1.0, distancia=10.0, velocidade=1.0, cor=(0.0, 0.4, 1.0))
+lua = c.CorpoCeleste(raio=0.3, distancia=2.5, velocidade=3.0, cor=(0.6, 0.6, 0.6))
+
+terra.adicionar_satelite(lua)
+sol.adicionar_satelite(terra)
+
 while rodando:
     for event in pygame.event.get():
         rodando = f.checar_fechamento(event, rodando)
@@ -46,6 +56,10 @@ while rodando:
                 rodando = False
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
+    sol.atualizar_fisica()
+    sol.desenhar(quadric)
+
     pygame.display.flip()
     relogio.tick(60)
 
