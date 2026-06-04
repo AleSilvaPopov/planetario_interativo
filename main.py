@@ -5,7 +5,6 @@ import funcoes as f
 import classes as c
 from OpenGL.GL import *
 from OpenGL.GLU import *
-import math
 
 f.desativar_escala_windows()
 pygame.init()
@@ -28,8 +27,7 @@ glClearColor(*constantes.COR_FUNDO)
 relogio = pygame.time.Clock()
 rodando = True
 
-pygame.mouse.set_visible(False) 
-pygame.event.set_grab(True)
+f.pausa_mouse(False)
 
 posicoes = {
             "cam_x": 0.0,
@@ -50,6 +48,8 @@ venus = c.CorpoCeleste(*constantes.VENUS)
 marte = c.CorpoCeleste(*constantes.MARTE)
 jupiter = c.CorpoCeleste(*constantes.JUPITER)
 saturno = c.CorpoCeleste(*constantes.SATURNO)
+urano = c.CorpoCeleste(*constantes.URANO)
+netuno = c.CorpoCeleste(*constantes.NETUNO)
 
 terra.adicionar_satelite(lua)
 sol.adicionar_satelite(terra)
@@ -58,9 +58,11 @@ sol.adicionar_satelite(venus)
 sol.adicionar_satelite(marte)
 sol.adicionar_satelite(jupiter)
 sol.adicionar_satelite(saturno)
+sol.adicionar_satelite(urano)
+sol.adicionar_satelite(netuno)
 
 pygame.mouse.get_rel()
-
+f.inicializar_estrelas(1000)
 while rodando:
     for event in pygame.event.get():
         rodando = f.checar_fechamento(event, rodando)
@@ -73,6 +75,8 @@ while rodando:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 3: 
                 pausado = not pausado
+                f.pausa_mouse(pausado)
+                
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_F11:
@@ -86,14 +90,18 @@ while rodando:
 
             if event.key == pygame.K_ESCAPE:
                 rodando = False
-    
-    dx, dy = pygame.mouse.get_rel()
-    vertical += dx * 0.2
-    transversal += dy * 0.2
-    transversal = max(-90.0, min(90.0, transversal)) 
 
-    teclas = pygame.key.get_pressed()
-    posicoes = f.movimentos(teclas, constantes.VEL_CAMERA, vertical, posicoes)
+    if not pausado:
+        dx, dy = pygame.mouse.get_rel()
+        vertical += dx * 0.2
+        transversal += dy * 0.2
+        transversal = max(-90.0, min(90.0, transversal)) 
+
+        teclas = pygame.key.get_pressed()
+        posicoes = f.movimentos(teclas, constantes.VEL_CAMERA, vertical, posicoes)
+        sol.atualizar_fisica()  
+    else:
+        pygame.mouse.get_rel()
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
@@ -104,14 +112,11 @@ while rodando:
     glRotatef(vertical, *constantes.ROT_EIXO_Y)
     glTranslatef(-posicoes["cam_x"], -posicoes["cam_y"], -posicoes["cam_z"])
 
-    if not pausado:
-        sol.atualizar_fisica()
-        f.desenhar_estrelas()
-
+    f.desenhar_estrelas()
     sol.desenhar(quadric)
-    
+
     pygame.display.flip()
-    relogio.tick(60)
+    relogio.tick(30)
 
 pygame.quit()
 sys.exit()

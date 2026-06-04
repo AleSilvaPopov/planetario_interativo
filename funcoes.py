@@ -6,6 +6,8 @@ from OpenGL.GLU import *
 import random
 import math
 
+estrelas_fixas = []
+
 def configurar_camera(largura_tela, altura_tela):
     if altura_tela == 0:
          altura_tela = 1
@@ -45,27 +47,25 @@ def tamanho_tela_f11(eh_tela_cheia, largura_janela, altura_janela):
     flags_opengl = pygame.OPENGL | pygame.DOUBLEBUF
     
     if eh_tela_cheia:
-        # Força o uso da resolução nativa do monitor (0,0)
-        tela = pygame.display.set_mode((0, 0), pygame.FULLSCREEN | flags_opengl)
+        return pygame.display.set_mode((0, 0), pygame.FULLSCREEN | flags_opengl)
     else:
-        tela = pygame.display.set_mode((largura_janela, altura_janela), pygame.RESIZABLE | flags_opengl)
-    
-    # [FORÇAR ATUALIZAÇÃO]: Garante que o OpenGL saiba que a área mudou
-    w, h = tela.get_size()
-    glViewport(0, 0, w, h)
-    
-    return tela
+        return pygame.display.set_mode((largura_janela, altura_janela), pygame.RESIZABLE | flags_opengl)
 
-def desenhar_estrelas(quantidade=100):
-    glBegin(GL_POINTS)
-    glColor3f(*constantes.COR_ESTRELAS)
+def inicializar_estrelas(quantidade=100):
+    global estrelas_fixas
+    estrelas_fixas = []
     for _ in range(quantidade):
         x = random.uniform(-50, 50)
         y = random.uniform(-50, 50)
         z = random.uniform(-50, 50)
+        estrelas_fixas.append((x, y, z))
+
+def desenhar_estrelas():
+    glBegin(GL_POINTS)
+    glColor3f(*constantes.COR_ESTRELAS)
+    for x, y, z in estrelas_fixas:
         glVertex3f(x, y, z)
     glEnd()
-
 
 def movimentos(teclas, velocidade_camera, yaw, posicoes):
     if teclas[pygame.K_w]:
@@ -86,3 +86,12 @@ def movimentos(teclas, velocidade_camera, yaw, posicoes):
         posicoes["cam_y"] -= velocidade_camera
 
     return posicoes
+
+def pausa_mouse(pausado):
+    if pausado:
+        pygame.mouse.set_visible(True)
+        pygame.event.set_grab(False)
+    else:
+        pygame.mouse.set_visible(False)
+        pygame.event.set_grab(True)
+        pygame.mouse.get_rel()
