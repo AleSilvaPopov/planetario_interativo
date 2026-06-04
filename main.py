@@ -31,18 +31,33 @@ rodando = True
 pygame.mouse.set_visible(False) 
 pygame.event.set_grab(True)
 
-cam_x, cam_y, cam_z = 0.0, 0.0, 30.0
-yaw, pitch = 0.0, 0.0
+posicoes = {
+            "cam_x": 0.0,
+            "cam_y": 0.0,
+            "cam_z": 30.0
+            }
+
+vertical, transversal = 0.0, 0.0
 pausado = False
 
-quadric = gluNewQuadric() 
+quadric = gluNewQuadric()
 
-sol = c.CorpoCeleste(raio=3.0, distancia=0.0, velocidade=0.5, cor=(1.0, 1.0, 0.0))
-terra = c.CorpoCeleste(raio=1.0, distancia=10.0, velocidade=1.0, cor=(0.0, 0.4, 1.0))
-lua = c.CorpoCeleste(raio=0.3, distancia=2.5, velocidade=3.0, cor=(0.6, 0.6, 0.6))
+sol = c.CorpoCeleste(*constantes.SOL)
+terra = c.CorpoCeleste(*constantes.TERRA)
+lua = c.CorpoCeleste(*constantes.LUA)
+mercurio = c.CorpoCeleste(*constantes.MERCURIO)
+venus = c.CorpoCeleste(*constantes.VENUS)
+marte = c.CorpoCeleste(*constantes.MARTE)
+jupiter = c.CorpoCeleste(*constantes.JUPITER)
+saturno = c.CorpoCeleste(*constantes.SATURNO)
 
 terra.adicionar_satelite(lua)
 sol.adicionar_satelite(terra)
+sol.adicionar_satelite(mercurio)
+sol.adicionar_satelite(venus)
+sol.adicionar_satelite(marte)
+sol.adicionar_satelite(jupiter)
+sol.adicionar_satelite(saturno)
 
 pygame.mouse.get_rel()
 
@@ -62,53 +77,38 @@ while rodando:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_F11:
                 eh_tela_cheia = not eh_tela_cheia
-                tela = f.tamanho_tela_f11(eh_tela_cheia, JANELA_LARGURA,JANELA_ALTURA)
-
-                f.configurar_camera(f.tela_largura(), f.tela_altura())
+                tela = f.tamanho_tela_f11(eh_tela_cheia, LARGURA_MONITOR, ALTURA_MONITOR)
+                
+                pygame.display.flip()
+                
+                f.configurar_camera(LARGURA_MONITOR*2, ALTURA_MONITOR*2)
                 glEnable(GL_DEPTH_TEST)
 
             if event.key == pygame.K_ESCAPE:
                 rodando = False
     
     dx, dy = pygame.mouse.get_rel()
-    yaw += dx * 0.2
-    pitch += dy * 0.2
-    pitch = max(-90.0, min(90.0, pitch)) 
+    vertical += dx * 0.2
+    transversal += dy * 0.2
+    transversal = max(-90.0, min(90.0, transversal)) 
 
     teclas = pygame.key.get_pressed()
-    velocidade_camera = 0.5
-
-    if teclas[pygame.K_w]:
-        cam_x += math.sin(math.radians(yaw)) * velocidade_camera
-        cam_z -= math.cos(math.radians(yaw)) * velocidade_camera
-    if teclas[pygame.K_s]:
-        cam_x -= math.sin(math.radians(yaw)) * velocidade_camera
-        cam_z += math.cos(math.radians(yaw)) * velocidade_camera
-    if teclas[pygame.K_a]:
-        cam_x -= math.cos(math.radians(yaw)) * velocidade_camera
-        cam_z -= math.sin(math.radians(yaw)) * velocidade_camera
-    if teclas[pygame.K_d]:
-        cam_x += math.cos(math.radians(yaw)) * velocidade_camera
-        cam_z += math.sin(math.radians(yaw)) * velocidade_camera
-    if teclas[pygame.K_SPACE]: 
-        cam_y += velocidade_camera
-    if teclas[pygame.K_LSHIFT]: 
-        cam_y -= velocidade_camera
+    posicoes = f.movimentos(teclas, constantes.VEL_CAMERA, vertical, posicoes)
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
     
-    glRotatef(pitch, 1.0, 0.0, 0.0)
-    glRotatef(yaw, 0.0, 1.0, 0.0)  
-    glTranslatef(-cam_x, -cam_y, -cam_z)
+    glRotatef(transversal, *constantes.ROT_EIXO_X)
+    glRotatef(vertical, *constantes.ROT_EIXO_Y)
+    glTranslatef(-posicoes["cam_x"], -posicoes["cam_y"], -posicoes["cam_z"])
 
     if not pausado:
         sol.atualizar_fisica()
+        f.desenhar_estrelas()
 
     sol.desenhar(quadric)
-    f.desenhar_estrelas()
     
     pygame.display.flip()
     relogio.tick(60)
