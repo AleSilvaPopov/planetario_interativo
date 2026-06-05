@@ -13,6 +13,7 @@ pip install pygame PyOpenGL
 Execute o arquivo principal no terminal:
 python main.py
 
+
 ## ⌨️ Controles
 
 | Ação | Comando |
