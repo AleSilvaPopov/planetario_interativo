@@ -27,7 +27,6 @@ glClearColor(*constantes.COR_FUNDO)
 relogio = pygame.time.Clock()
 rodando = True
 
-
 f.pausa_mouse(False)
 
 posicoes = {
@@ -52,7 +51,6 @@ saturno = c.CorpoCeleste(*constantes.SATURNO)
 urano = c.CorpoCeleste(*constantes.URANO)
 netuno = c.CorpoCeleste(*constantes.NETUNO)
 
-
 terra.adicionar_satelite(lua)
 sol.adicionar_satelite(terra)
 sol.adicionar_satelite(mercurio)
@@ -64,8 +62,9 @@ sol.adicionar_satelite(urano)
 sol.adicionar_satelite(netuno)
 
 pygame.mouse.get_rel()
-f.inicializar_estrelas(1000)
+f.inicializar_estrelas(constantes.NUM_ESTRELAS)
 estado_atual = "menu"
+
 while rodando:
     for event in pygame.event.get():
         rodando = f.checar_fechamento(event, rodando)
@@ -90,15 +89,15 @@ while rodando:
                     eh_tela_cheia = not eh_tela_cheia
                     tela = f.tamanho_tela_f11(eh_tela_cheia, LARGURA_MONITOR, ALTURA_MONITOR)
                     pygame.display.flip()
-                    f.configurar_camera(tela.get_width(), tela.get_height())
+                    f.configurar_camera(LARGURA_MONITOR*2, ALTURA_MONITOR*2)
                     glEnable(GL_DEPTH_TEST)
                 if event.key == pygame.K_ESCAPE:
                     rodando = False
 
     if estado_atual == "jogando" and not pausado:
         dx, dy = pygame.mouse.get_rel()
-        vertical += dx * 0.2
-        transversal += dy * 0.2
+        vertical += dx * constantes.VOL_DX
+        transversal += dy * constantes.VOL_DY
         transversal = max(-90.0, min(90.0, transversal)) 
 
         teclas = pygame.key.get_pressed()
@@ -112,27 +111,14 @@ while rodando:
     if estado_atual == "menu":
         glDisable(GL_DEPTH_TEST)
         fonte = pygame.font.SysFont("Arial", 30)
-        instrucoes = [
-            "PLANETARIO INTERATIVO",
-            "",
-            "Movimentacao: W, A, S, D + Mouse",
-            "Pausa: Botao Direito do Mouse",
-            "Tela Cheia: F11",
-            "Fechar: ESC",
-            "",
-            "CLIQUE PARA INICIAR"
-        ]
-
-        w, h = tela.get_size()
-        f.desenhar_texto_opengl(instrucoes, fonte, w, h)
+        f.desenhar_texto_opengl(constantes.INSTRUCOES, fonte, JANELA_LARGURA, JANELA_ALTURA)
         
         glEnable(GL_DEPTH_TEST)
-    
     elif estado_atual == "jogando":
         if not pausado:
             dx, dy = pygame.mouse.get_rel()
-            vertical += dx * 0.2
-            transversal += dy * 0.2
+            vertical += dx * constantes.VOL_DX
+            transversal += dy * constantes.VOL_DY
             transversal = max(-90.0, min(90.0, transversal)) 
             teclas = pygame.key.get_pressed()
             posicoes = f.movimentos(teclas, constantes.VEL_CAMERA, vertical, posicoes)
@@ -150,7 +136,7 @@ while rodando:
         sol.desenhar(quadric)
 
     pygame.display.flip()
-    relogio.tick(30)
+    relogio.tick(constantes.FPS)
 
 pygame.quit()
 sys.exit()

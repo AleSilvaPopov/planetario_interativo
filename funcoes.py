@@ -7,6 +7,7 @@ import random
 import math
 
 estrelas_fixas = []
+_text_cache = {"id": None, "last_text": None}
 
 def configurar_camera(largura_tela, altura_tela):
     if altura_tela == 0:
@@ -97,56 +98,62 @@ def pausa_mouse(pausado):
         pygame.mouse.get_rel()
 
 def desenhar_texto_opengl(texto_lista, fonte, largura_tela, altura_tela):
+    global _text_cache
+    
+    if _text_cache["last_text"] != texto_lista:
+        if _text_cache["id"]:
+            glDeleteTextures(_text_cache["id"])
+            
+        linha_altura = fonte.get_height()
+        largura_max = max([fonte.size(l)[0] for l in texto_lista]) + 10
+        total_altura = (linha_altura + 10) * len(texto_lista)
+        
+        sup = pygame.Surface((largura_max, total_altura), pygame.SRCALPHA)
+        
+        for i, linha in enumerate(texto_lista):
+            y_pos = i * (linha_altura + 10)
+            sombra = fonte.render(linha, True, (0, 0, 0, 150))
+            texto = fonte.render(linha, True, (255, 255, 255, 255))
+            
+            sup.blit(sombra, (2, y_pos + 2))
+            sup.blit(texto, (0, y_pos))
+            
+        data = pygame.image.tostring(sup, "RGBA", True)
+        tex_id = glGenTextures(1)
+        glBindTexture(GL_TEXTURE_2D, tex_id)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sup.get_width(), sup.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, data)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+        
+        _text_cache.update({"id": tex_id, "last_text": texto_lista, "w": sup.get_width(), "h": total_altura})
+
     glDisable(GL_DEPTH_TEST)
     glEnable(GL_BLEND)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
     
-    sup = pygame.Surface((largura_tela, altura_tela), pygame.SRCALPHA)
-    y_inicial = (altura_tela // 2) - (len(texto_lista) * 20)
-
-    for i, linha in enumerate(texto_lista):
-        sombra = fonte.render(linha, True, (0, 0, 0))
-        # Texto Principal (Branco)
-        texto = fonte.render(linha, True, (255, 255, 255))
-        
-        # Calcula largura para centralizar
-        rect = texto.get_rect(center=(largura_tela // 2, y_inicial + (i * 50)))
-        
-        sup.blit(sombra, rect.move(2, 2)) # Sombra deslocada 2px
-        sup.blit(texto, rect)
-    
-    # 2. Converte para o formato que o OpenGL gosta
-    data = pygame.image.tostring(sup, "RGBA", True)
-    
-    # 3. Cria a textura
-    tex_id = glGenTextures(1)
-    glBindTexture(GL_TEXTURE_2D, tex_id)
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, largura_tela, altura_tela, 0, GL_RGBA, GL_UNSIGNED_BYTE, data)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-    
-    # 4. Desenha usando projeção ortogonal (para não distorcer)
     glMatrixMode(GL_PROJECTION)
-    glPushMatrix() # Salva a projeção 3D
+    glPushMatrix()
     glLoadIdentity()
-    glOrtho(0, largura_tela, altura_tela, 0, -1, 1) # Projeção 2D
+    glOrtho(0, largura_tela, altura_tela, 0, -1, 1)
+    
     glMatrixMode(GL_MODELVIEW)
     glPushMatrix()
     glLoadIdentity()
     
+    glBindTexture(GL_TEXTURE_2D, _text_cache["id"])
     glEnable(GL_TEXTURE_2D)
-    glBegin(GL_QUADS)
-    glTexCoord2f(0, 1); glVertex2f(0, 0)
-    glTexCoord2f(1, 1); glVertex2f(largura_tela, 0)
-    glTexCoord2f(1, 0); glVertex2f(largura_tela, altura_tela)
-    glTexCoord2f(0, 0); glVertex2f(0, altura_tela)
-    glEnd()
-    glDisable(GL_TEXTURE_2D)
     
-    # Restaura o estado anterior
+    x_offset = (largura_tela - _text_cache["w"]) // 2
+    y_offset = (altura_tela - _text_cache["h"]) // 2
+    
+    glBegin(GL_QUADS)
+    glTexCoord2f(0, 1); glVertex2f(x_offset, y_offset)
+    glTexCoord2f(1, 1); glVertex2f(x_offset + _text_cache["w"], y_offset)
+    glTexCoord2f(1, 0); glVertex2f(x_offset + _text_cache["w"], y_offset + _text_cache["h"])
+    glTexCoord2f(0, 0); glVertex2f(x_offset, y_offset + _text_cache["h"])
+    glEnd()
+    
+    glDisable(GL_TEXTURE_2D)
     glPopMatrix()
     glMatrixMode(GL_PROJECTION)
     glPopMatrix()
-    glMatrixMode(GL_MODELVIEW)
-    
-    glDeleteTextures(int(tex_id))
     glEnable(GL_DEPTH_TEST)
