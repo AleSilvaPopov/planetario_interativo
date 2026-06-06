@@ -52,13 +52,13 @@ def tamanho_tela_f11(eh_tela_cheia, largura_janela, altura_janela):
     else:
         return pygame.display.set_mode((largura_janela, altura_janela), pygame.RESIZABLE | flags_opengl)
 
-def inicializar_estrelas(quantidade=100):
+def inicializar_estrelas(quantidade=constantes.QUANT_ESTRELAS):
     global estrelas_fixas
     estrelas_fixas = []
     for _ in range(quantidade):
-        x = random.uniform(-50, 50)
-        y = random.uniform(-50, 50)
-        z = random.uniform(-50, 50)
+        x = random.uniform(-100, 100)
+        y = random.uniform(-100, 100)
+        z = random.uniform(-100, 100)
         estrelas_fixas.append((x, y, z))
 
 def desenhar_estrelas():

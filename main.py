@@ -40,6 +40,8 @@ pausado = False
 
 quadric = gluNewQuadric()
 
+buraco_negro = c.CorpoCeleste(*constantes.BURACO_NEGRO)
+
 sol = c.CorpoCeleste(*constantes.SOL)
 terra = c.CorpoCeleste(*constantes.TERRA)
 lua = c.CorpoCeleste(*constantes.LUA)
@@ -60,6 +62,8 @@ sol.adicionar_satelite(jupiter)
 sol.adicionar_satelite(saturno)
 sol.adicionar_satelite(urano)
 sol.adicionar_satelite(netuno)
+
+buraco_negro.adicionar_satelite(sol)
 
 pygame.mouse.get_rel()
 f.inicializar_estrelas(constantes.NUM_ESTRELAS)
@@ -133,7 +137,7 @@ while rodando:
         glTranslatef(-posicoes["cam_x"], -posicoes["cam_y"], -posicoes["cam_z"])
 
         f.desenhar_estrelas()
-        sol.desenhar(quadric)
+        buraco_negro.desenhar(quadric)
 
     pygame.display.flip()
     relogio.tick(constantes.FPS)
