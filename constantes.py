@@ -27,6 +27,16 @@ COR_TITANIA   = (0.7, 0.7, 0.8)
 COR_OBERON    = (0.6, 0.6, 0.7)
 COR_MIRANDA   = (0.8, 0.8, 0.8)
 COR_TRITAO    = (0.5, 0.8, 0.7)
+COR_ESTRELA_AZUL = (0.3, 0.5, 1.0)
+COR_PLANETA_1 = (0.4, 0.9, 0.4)
+COR_PLANETA_2 = (0.8, 0.2, 0.5) 
+COR_SATELITE = (0.8, 0.8, 0.9)
+COR_ANEL_1 = (0.9, 0.6, 0.8)
+COR_ANA_VERMELHA = (0.8, 0.1, 0.1) 
+COR_PLANETA_LAVA = (1.0, 0.3, 0.0)    
+COR_PLANETA_ROCO = (0.5, 0.4, 0.3)    
+COR_PLANETA_GELO = (0.6, 0.8, 0.9)   
+COR_ANEL_GELO    = (0.8, 0.9, 1.0)
 
 # Cores dedicadas para geometria adicional (discos de acreção e anéis planetários)
 COR_ANEL_BURACO_NEGRO = (1.0, 0.4, 0.0)
@@ -55,8 +65,10 @@ VOL_DY = 0.2
 # Corpo estático central
 BURACO_NEGRO = (8.0, 0.0, 0.0, COR_BURACO_NEGRO, True, COR_ANEL_BURACO_NEGRO)
 
-# Estrela central do sistema solar
+# Estrela
 SOL = (4.0, 60.0, 0.2, COR_SOL)
+ESTRELA_AZUL = (3.0, 27.0, 0.15, COR_ESTRELA_AZUL) 
+ANA_VERMELHA = (2.5, 105.0, 0.02, COR_ANA_VERMELHA)
 
 # Planetas
 MERCURIO = (0.2, 5.0, 4.0, COR_MERCURIO)
@@ -67,6 +79,13 @@ JUPITER  = (1.5, 12.5, 0.8, COR_JUPITER)
 SATURNO  = (1.2, 16.0, 0.5, COR_SATURNO, True, COR_ANEL_SATURNO)
 URANO    = (0.9, 19.0, 0.3, COR_URANO)
 NETUNO   = (0.8, 22.0, 0.2, COR_NETUNO)
+
+PLANETA_1 = (0.6, 4.5, 1.2, COR_PLANETA_1)
+PLANETA_2 = (0.8, 8.5, 0.5, COR_PLANETA_2, True, COR_ANEL_1)
+
+PLANETA_LAVA = (0.4, 3.5, 3.0, COR_PLANETA_LAVA)
+PLANETA_ROCO = (0.6, 6.0, 1.8, COR_PLANETA_ROCO)
+PLANETA_GELO = (0.8, 10.0, 0.7, COR_PLANETA_GELO, True, COR_ANEL_GELO)
 
 # Satélites naturais
 #Terra
@@ -90,33 +109,9 @@ MIRANDA   = (0.06, 1.8,  7.5, COR_MIRANDA)
 #Netuno
 TRITAO    = (0.16, 3.0,  6.0, COR_TRITAO)
 
-
-#Outro sistema
-COR_ESTRELA_AZUL = (0.3, 0.5, 1.0)
-COR_PLANETA_1 = (0.4, 0.9, 0.4)
-COR_PLANETA_2 = (0.8, 0.2, 0.5) 
-COR_SATELITE = (0.8, 0.8, 0.9)
-COR_ANEL_1 = (0.9, 0.6, 0.8)
-
-ESTRELA_AZUL = (3.0, 27.0, 0.15, COR_ESTRELA_AZUL) 
-
-PLANETA_1 = (0.6, 4.5, 1.2, COR_PLANETA_1)
-PLANETA_2 = (0.8, 8.5, 0.5, COR_PLANETA_2, True, COR_ANEL_1)
-
 SATELITE = (0.2, 1.5, 3.0, COR_SATELITE)
 
 #Outro sistema
-COR_ANA_VERMELHA = (0.8, 0.1, 0.1) 
-COR_PLANETA_LAVA = (1.0, 0.3, 0.0)    
-COR_PLANETA_ROCO = (0.5, 0.4, 0.3)    
-COR_PLANETA_GELO = (0.6, 0.8, 0.9)   
-COR_ANEL_GELO    = (0.8, 0.9, 1.0)
-
-ANA_VERMELHA = (2.5, 105.0, 0.02, COR_ANA_VERMELHA)
-
-PLANETA_LAVA = (0.4, 3.5, 3.0, COR_PLANETA_LAVA)
-PLANETA_ROCO = (0.6, 6.0, 1.8, COR_PLANETA_ROCO)
-PLANETA_GELO = (0.8, 10.0, 0.7, COR_PLANETA_GELO, True, COR_ANEL_GELO)
 
 
 # INTERFACE DE USUÁRIO

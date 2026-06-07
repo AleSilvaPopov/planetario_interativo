@@ -55,7 +55,6 @@ pygame.mouse.get_rel()
 f.inicializar_estrelas(constantes.QUANT_ESTRELAS)
 estado_atual = "menu"
 
-
 # Laço Principal
 while rodando:
     # Captura de Eventos
