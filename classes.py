@@ -1,5 +1,6 @@
 from OpenGL.GL import *
 from OpenGL.GLU import *
+import constantes
 
 # CLASSE: CorpoCeleste
 
@@ -29,7 +30,7 @@ class CorpoCeleste:
 
     def atualizar_fisica(self):
         # Acumula o deslocamento angular.
-        self.angulo += self.velocidade
+        self.angulo += (self.velocidade * constantes.ESCALA_TEMPO)
 
         # Propaga a atualização da física em profundidade para todos os filhos.
         for satelite in self.satelites:

@@ -50,32 +50,7 @@ pausado = False
 #Objeto quadric do OpenGL otimizado para gerar esferas e discos
 quadric = gluNewQuadric()
 
-# Construção do Grafo
-buraco_negro = c.CorpoCeleste(*constantes.BURACO_NEGRO)
-
-sol = c.CorpoCeleste(*constantes.SOL)
-terra = c.CorpoCeleste(*constantes.TERRA)
-lua = c.CorpoCeleste(*constantes.LUA)
-mercurio = c.CorpoCeleste(*constantes.MERCURIO)
-venus = c.CorpoCeleste(*constantes.VENUS)
-marte = c.CorpoCeleste(*constantes.MARTE)
-jupiter = c.CorpoCeleste(*constantes.JUPITER)
-saturno = c.CorpoCeleste(*constantes.SATURNO)
-urano = c.CorpoCeleste(*constantes.URANO)
-netuno = c.CorpoCeleste(*constantes.NETUNO)
-
-terra.adicionar_satelite(lua)
-sol.adicionar_satelite(terra)
-sol.adicionar_satelite(mercurio)
-sol.adicionar_satelite(venus)
-sol.adicionar_satelite(marte)
-sol.adicionar_satelite(jupiter)
-sol.adicionar_satelite(saturno)
-sol.adicionar_satelite(urano)
-sol.adicionar_satelite(netuno)
-
-buraco_negro.adicionar_satelite(sol)
-
+universo = f.iniciar_sistema()
 pygame.mouse.get_rel()
 f.inicializar_estrelas(constantes.QUANT_ESTRELAS)
 estado_atual = "menu"
@@ -109,7 +84,7 @@ while rodando:
                     eh_tela_cheia = not eh_tela_cheia
                     tela = f.tamanho_tela_f11(eh_tela_cheia, LARGURA_MONITOR, ALTURA_MONITOR)
                     pygame.display.flip()
-                    f.configurar_camera(LARGURA_MONITOR*2, ALTURA_MONITOR*2)
+                    f.configurar_camera(LARGURA_MONITOR, ALTURA_MONITOR)
                     glEnable(GL_DEPTH_TEST)
                 if event.key == pygame.K_ESCAPE:
                     rodando = False
@@ -124,7 +99,7 @@ while rodando:
         # Movimentação do Teclado e Física
         teclas = pygame.key.get_pressed()
         posicoes = f.movimentos(teclas, constantes.VEL_CAMERA, vertical, posicoes)
-        sol.atualizar_fisica()
+        universo.atualizar_fisica()
     elif estado_atual == "jogando" and pausado:
         pygame.mouse.get_rel()
 
@@ -145,7 +120,7 @@ while rodando:
             transversal = max(-90.0, min(90.0, transversal)) 
             teclas = pygame.key.get_pressed()
             posicoes = f.movimentos(teclas, constantes.VEL_CAMERA, vertical, posicoes)
-            sol.atualizar_fisica()
+            universo.atualizar_fisica()
         else:
             pygame.mouse.get_rel()
 
@@ -156,7 +131,7 @@ while rodando:
         glTranslatef(-posicoes["cam_x"], -posicoes["cam_y"], -posicoes["cam_z"])
 
         f.desenhar_estrelas()
-        buraco_negro.desenhar(quadric)
+        universo.desenhar(quadric)
 
     pygame.display.flip()
     relogio.tick(constantes.FPS)

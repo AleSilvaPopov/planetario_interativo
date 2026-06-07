@@ -5,6 +5,7 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 import random
 import math
+import classes as c
 
 # VARIÁVEIS GERAIS
 estrelas_fixas = []
@@ -76,9 +77,9 @@ def inicializar_estrelas(quantidade=constantes.QUANT_ESTRELAS):
     estrelas_fixas = []
     # Gera coordenadas 3D aleatórias dentro de um cubo de 200x200x200
     for _ in range(quantidade):
-        x = random.uniform(-100, 100)
-        y = random.uniform(-100, 100)
-        z = random.uniform(-100, 100)
+        x = random.uniform(-200, 200)
+        y = random.uniform(-200, 200)
+        z = random.uniform(-200, 200)
         estrelas_fixas.append((x, y, z))
 
 def desenhar_estrelas():
@@ -188,3 +189,94 @@ def desenhar_texto_opengl(texto_lista, fonte, largura_tela, altura_tela):
     glMatrixMode(GL_PROJECTION)
     glPopMatrix()
     glEnable(GL_DEPTH_TEST)
+
+
+def iniciar_sistema():
+    buraco_negro = c.CorpoCeleste(*constantes.BURACO_NEGRO)
+
+    sol = c.CorpoCeleste(*constantes.SOL)
+
+    terra = c.CorpoCeleste(*constantes.TERRA)
+    lua = c.CorpoCeleste(*constantes.LUA)
+
+    mercurio = c.CorpoCeleste(*constantes.MERCURIO)
+
+    venus = c.CorpoCeleste(*constantes.VENUS)
+
+    marte = c.CorpoCeleste(*constantes.MARTE)
+    fobos = c.CorpoCeleste(*constantes.FOBOS)
+    deimos = c.CorpoCeleste(*constantes.DEIMOS)
+
+    jupiter = c.CorpoCeleste(*constantes.JUPITER)
+    io = c.CorpoCeleste(*constantes.IO)
+    europa = c.CorpoCeleste(*constantes.EUROPA)
+    ganimedes = c.CorpoCeleste(*constantes.GANIMEDES)
+    calisto = c.CorpoCeleste(*constantes.CALISTO)
+
+    saturno = c.CorpoCeleste(*constantes.SATURNO)
+    tita = c.CorpoCeleste(*constantes.TITA)
+    encelado = c.CorpoCeleste(*constantes.ENCELADO)
+    reia = c.CorpoCeleste(*constantes.REIA)
+
+    urano = c.CorpoCeleste(*constantes.URANO)
+    titania = c.CorpoCeleste(*constantes.TITANIA)
+    oberon = c.CorpoCeleste(*constantes.OBERON)
+    miranda = c.CorpoCeleste(*constantes.MIRANDA)
+
+    netuno = c.CorpoCeleste(*constantes.NETUNO)
+    tritao = c.CorpoCeleste(*constantes.TRITAO)
+
+    terra.adicionar_satelite(lua)
+
+    marte.adicionar_satelite(fobos)
+    marte.adicionar_satelite(deimos)
+
+    jupiter.adicionar_satelite(io)
+    jupiter.adicionar_satelite(europa)
+    jupiter.adicionar_satelite(ganimedes)
+    jupiter.adicionar_satelite(calisto)
+
+    saturno.adicionar_satelite(tita)
+    saturno.adicionar_satelite(encelado)
+    saturno.adicionar_satelite(reia)
+
+    urano.adicionar_satelite(titania)
+    urano.adicionar_satelite(oberon)
+    urano.adicionar_satelite(miranda)
+
+    netuno.adicionar_satelite(tritao)
+
+    sol.adicionar_satelite(terra)
+    sol.adicionar_satelite(mercurio)
+    sol.adicionar_satelite(venus)
+    sol.adicionar_satelite(marte)
+    sol.adicionar_satelite(jupiter)
+    sol.adicionar_satelite(saturno)
+    sol.adicionar_satelite(urano)
+    sol.adicionar_satelite(netuno)
+
+    estrela_azul = c.CorpoCeleste(*constantes.ESTRELA_AZUL)
+    planeta_1 = c.CorpoCeleste(*constantes.PLANETA_1)
+    planeta_2 = c.CorpoCeleste(*constantes.PLANETA_2)
+    satelite_1 = c.CorpoCeleste(*constantes.SATELITE)
+
+    planeta_1.adicionar_satelite(satelite_1)
+    estrela_azul.adicionar_satelite(planeta_1)
+    estrela_azul.adicionar_satelite(planeta_2)
+
+    ana_vermelha = c.CorpoCeleste(*constantes.ANA_VERMELHA)
+    planeta_lava = c.CorpoCeleste(*constantes.PLANETA_LAVA)
+    planeta_roco = c.CorpoCeleste(*constantes.PLANETA_ROCO)
+    planeta_gelo = c.CorpoCeleste(*constantes.PLANETA_GELO)
+
+    # Montando a hierarquia do Sistema Terciário
+    ana_vermelha.adicionar_satelite(planeta_lava)
+    ana_vermelha.adicionar_satelite(planeta_roco)
+    ana_vermelha.adicionar_satelite(planeta_gelo)
+
+    # 3. Anexando as Subárvores ao Nó Raiz (Buraco Negro)
+    buraco_negro.adicionar_satelite(sol)          
+    buraco_negro.adicionar_satelite(estrela_azul)
+    buraco_negro.adicionar_satelite(ana_vermelha)
+
+    return buraco_negro
