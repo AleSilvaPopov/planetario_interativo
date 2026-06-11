@@ -2,6 +2,7 @@
 
 Simulação interativa do sistema solar em 3D desenvolvida em Python, focada em renderização gráfica e física orbital hierárquica.
 
+[Link para o GITHUB do projeto](https://github.com/AleSilvaPopov/planetario_interativo)
 ## 🚀 Dependências
 
 Certifique-se de ter o Python instalado e execute o comando abaixo para instalar as bibliotecas necessárias:
